@@ -6,10 +6,10 @@ const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
   const owner = req.user._id;
-  const { name, weather, imageURL } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
   clothingItemSchema
-    .create({ name, weather, imageURL, owner })
+    .create({ name, weather, imageUrl, owner })
     .then((item) => {
       console.log(item);
       res.status(201).send({ data: item });
@@ -17,9 +17,13 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res
+        .status(serverError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -30,7 +34,9 @@ const getItems = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
       return res
         .status(serverError)
@@ -38,7 +44,7 @@ const getItems = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
+/* const updateItem = (req, res) => {
   const { itemId } = req.params;
   const { imageURL } = req.body;
 
@@ -51,14 +57,20 @@ const updateItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: err.message });
+        return res
+          .status(notFound)
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res
+        .status(serverError)
+        .send({ message: "An error has occurred on the server" });
     });
-};
+}; */
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
@@ -68,17 +80,23 @@ const deleteItem = (req, res) => {
     .findByIdAndDelete(itemId)
     .orFail()
     .then((item) => {
-      res.status(204).send(item);
+      res.status(200).send(item);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: err.message });
+        return res
+          .status(notFound)
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res
+        .status(serverError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -95,12 +113,18 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: err.message });
+        return res
+          .status(notFound)
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res
+        .status(serverError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -112,16 +136,23 @@ const dislikeItem = (req, res) => {
       { $pull: { likes: req.user._id } },
       { new: true }
     )
+    .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(badRequest).send({ message: err.message });
+        return res
+          .status(badRequest)
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: err.message });
+        return res
+          .status(notFound)
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res
+        .status(serverError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
