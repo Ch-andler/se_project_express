@@ -7,12 +7,8 @@ router.use("/items", itemRouter);
 
 const NOT_FOUND = 404;
 
-router.use((req, res, next) => {
+router.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Router not found" });
 });
-
-/* router.use((req, res) => {
-  res.status(404).send({ message: "Router not found" });
-}); */
 
 module.exports = router;
