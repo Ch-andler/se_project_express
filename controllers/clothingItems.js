@@ -1,15 +1,19 @@
 const clothingItemSchema = require("../models/clothingItem");
-const { badRequest, notFound, serverError } = require("../utils/errors");
+const {
+  badRequest,
+  notFound,
+  serverError,
+  FORBIDDEN,
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   console.log(req.user._id);
   console.log(req);
   console.log(req.body);
-  const owner = req.user._id;
-  const { name, weather, imageUrl } = req.body;
+  const { name, weather, imageUrl, likes, createdAt } = req.body;
 
   clothingItemSchema
-    .create({ name, weather, imageUrl, owner })
+    .create({ name, weather, imageUrl, owner: req.user_id, likes, createdAt })
     .then((item) => {
       console.log(item);
       res.status(201).send({ data: item });
@@ -39,13 +43,21 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const { _id: userId } = req.user;
 
   console.log(itemId);
   clothingItemSchema
     .findByIdAndDelete(itemId)
     .orFail()
     .then((item) => {
-      res.status(200).send(item);
+      if (item.owner.toString() !== userId) {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "You do not have permission to delete this item" });
+      }
+      return ClothingItem.findByIdAndDelete(itemId).then(() =>
+        res.send({ message: "Item successfully deleted" })
+      );
     })
     .catch((err) => {
       console.error(err);
