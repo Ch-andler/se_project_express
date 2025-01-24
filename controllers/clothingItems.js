@@ -55,9 +55,9 @@ const deleteItem = (req, res) => {
           .status(FORBIDDEN)
           .send({ message: "You do not have permission to delete this item" });
       }
-      return ClothingItem.findByIdAndDelete(itemId).then(() =>
-        res.send({ message: "Item successfully deleted" })
-      );
+      return clothingItemSchema
+        .findByIdAndDelete(itemId)
+        .then(() => res.send({ message: "Item successfully deleted" }));
     })
     .catch((err) => {
       console.error(err);
