@@ -11,7 +11,7 @@ const {
 
 const { JWT_SECRET } = require("../utils/config");
 
-const getUsers = (req, res) => {
+/* const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
@@ -20,7 +20,7 @@ const getUsers = (req, res) => {
         .status(serverError)
         .send({ message: "An error has occurred on the server" });
     });
-};
+}; */
 
 const getCurrentUser = (req, res) => {
   // user ID destructured from req.user
@@ -110,7 +110,9 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch(() => {
-      res.status(unauthorized).send({ message: "Authorization Required" });
+      if (err.message === "Incorrect email or password") {
+        res.status(unauthorized).send({ message: "Authorization Required" });
+      }
     });
 };
 
@@ -149,29 +151,6 @@ const updateCurrentUser = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-
-/* const getUser = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "CastError") {
-        return res
-          .status(badRequest)
-          .send({ message: "An error has occurred on the server" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(notFound)
-          .send({ message: "An error has occurred on the server" });
-      }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
-    });
-}; */
 
 module.exports = {
   getUsers,
