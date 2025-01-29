@@ -5,22 +5,10 @@ const {
   badRequest,
   notFound,
   serverError,
-  unauthorized,
   CONFLICT,
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
-
-/* const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
-    });
-}; */
 
 const getCurrentUser = (req, res) => {
   // user ID destructured from req.user
@@ -49,21 +37,6 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-/* const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(badRequest)
-          .send({ message: "An error has occurred on the server" });
-      }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
-    });
-}; */
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   bcrypt
@@ -109,9 +82,11 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch(() => {
+    .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        res.status(unauthorized).send({ message: "Authorization Required" });
+        res
+          .status(serverError)
+          .send({ message: "An error has occurred on the server" });
       }
     });
 };
@@ -153,7 +128,6 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,

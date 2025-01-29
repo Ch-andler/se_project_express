@@ -13,7 +13,7 @@ const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
   clothingItemSchema
-    .create({ name, weather, imageUrl, owner: req.user._id, likes, createdAt })
+    .create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
       console.log(item);
       res.status(201).send({ data: item });
