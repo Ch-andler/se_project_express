@@ -2,7 +2,7 @@ const router = require("express").Router();
 const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const { login, createUser } = require("../controllers/users");
-const { NOT_FOUND } = require("../utils/errors");
+const { notFound } = require("../utils/errors");
 
 // Public routes
 router.post("/signin", login);
@@ -15,7 +15,7 @@ router.use("/users", userRouter);
 
 // Catch-all for unmatched routes
 router.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Router not found" });
+  res.status(notFound).send({ message: "Router not found" });
 });
 
 module.exports = router;
