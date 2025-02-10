@@ -6,6 +6,7 @@ const {
   notFound,
   serverError,
   CONFLICT,
+  unauthorized,
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
@@ -84,6 +85,10 @@ const login = (req, res) => {
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
+        res
+          .status(unauthorized)
+          .send({ message: "Incorrect email or password" });
+      } else {
         res
           .status(serverError)
           .send({ message: "An error has occurred on the server" });
