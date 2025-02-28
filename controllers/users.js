@@ -8,6 +8,7 @@ const {
   CONFLICT,
   unauthorized,
 } = require("../utils/errors");
+const httpErrors = require("http-errors"); // Import http-errors
 
 const { JWT_SECRET } = require("../utils/config");
 
@@ -69,13 +70,12 @@ const createUser = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res
-      .status(badRequest)
-      .send({ message: "Email and password are required" });
+    next(new badRequest("Input is not valid"));
   }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -85,13 +85,9 @@ const login = (req, res) => {
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        res
-          .status(unauthorized)
-          .send({ message: "Incorrect email or password" });
+        next(new httpErrors.Conflict("User is unauthorized"));
       } else {
-        res
-          .status(serverError)
-          .send({ message: "An error has occurred on the server" });
+        next(err);
       }
     });
 };
