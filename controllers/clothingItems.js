@@ -1,10 +1,13 @@
 const clothingItemSchema = require("../models/clothingItem");
-const {
+const NotFoundError = require("../errors/NotFoundError");
+const BadRequestError = require("../errors/BadRequestError");
+const ForbiddenError = require("../errors/ForbiddenError");
+/* const {
   badRequest,
   notFound,
   serverError,
   FORBIDDEN,
-} = require("../utils/errors");
+} = require("../utils/errors"); */
 
 const createItem = (req, res) => {
   console.log(req.user._id);
@@ -19,13 +22,13 @@ const createItem = (req, res) => {
       res.status(201).send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(badRequest).send({ message: "Invalid Data" });
+        return next(new BadRequestError("Invalid data entered"));
       }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
+      if (err.name === "CastError") {
+        return next(new BadRequestError("Invalid data entered"));
+      }
+      return next(err);
     });
 };
 
@@ -34,8 +37,10 @@ const getItems = (req, res) => {
     .find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
-      console.error(err);
-      res.status(serverError).send({ message: "Error from getItems" });
+      if (err.name === "DocumentNotFoundError") {
+        return next(new NotFoundError("Requested resource not found."));
+      }
+      return next(err);
     });
 };
 
@@ -49,27 +54,21 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== userId) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "You do not have permission to delete this item" });
+        return next(new ForbiddenError("You do not own this item."));
       }
-      return clothingItemSchema
-        .findByIdAndDelete(itemId)
-        .then(() => res.send({ message: "Item successfully deleted" }));
+
+      return ClothingItem.findByIdAndDelete(itemId).then((item) => {
+        res.send({ message: `deleted item with ID: ${item._id}` });
+      });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(badRequest)
-          .send({ message: "An error has occurred on the server" });
+        return next(new BadRequestError("Invalid data entered."));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: "Data was not found" });
+        return next(new NotFoundError("Requested resource not found."));
       }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
@@ -84,18 +83,13 @@ const likeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(badRequest)
-          .send({ message: "An error has occurred on the server" });
+        return next(new BadRequestError("Invalid data entered"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: "Data was not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
@@ -110,18 +104,13 @@ const dislikeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(badRequest)
-          .send({ message: "An error has occurred on the server" });
+        return next(new BadRequestError("Invalid data entered."));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFound).send({ message: "Data was not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
-      return res
-        .status(serverError)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
