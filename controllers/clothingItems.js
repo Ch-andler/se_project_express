@@ -43,7 +43,7 @@ const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user?._id;
 
-  clothingItemSchemaItem
+  clothingItemSchema
     .findById(itemId)
     .orFail()
     .then((item) => {
