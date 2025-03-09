@@ -3,12 +3,6 @@ const ClothingItem = require("../models/clothingItem");
 const NotFoundError = require("../errors/NotFoundError");
 const BadRequestError = require("../errors/BadRequestError");
 const ForbiddenError = require("../errors/ForbiddenError");
-/* const {
-  badRequest,
-  notFound,
-  serverError,
-  FORBIDDEN,
-} = require("../utils/errors"); */
 
 const createItem = (req, res, next) => {
   console.log(req.user._id);
@@ -47,29 +41,23 @@ const getItems = (req, res, next) => {
 
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
-  const { _id: userId } = req.user;
+  const userId = req.user?._id;
 
-  console.log(itemId);
-  clothingItemSchema
+  clothingItemSchemaItem
     .findById(itemId)
     .orFail()
     .then((item) => {
-      if (item.owner.toString() !== userId) {
-        return next(new ForbiddenError("You do not own this item."));
+      if (!item.owner.equals(userId)) {
+        next(new ForbiddenError("Item not found"));
       }
-
-      return ClothingItem.findByIdAndDelete(itemId).then((item) => {
-        res.send({ message: `deleted item with ID: ${item._id}` });
+      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
+        if (!deletedItem) {
+          next(new NotFoundError("Item not found Boogies"));
+        }
+        return res
+          .status(200)
+          .send({ message: "Item has been deleted", deleteItem });
       });
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return next(new BadRequestError("Invalid data entered."));
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return next(new NotFoundError("Requested resource not found."));
-      }
-      return next(err);
     });
 };
 

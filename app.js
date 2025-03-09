@@ -9,6 +9,7 @@ const errorHandler = require("./middlewares/error-handler");
 const app = express();
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+
 const { PORT = 3001 } = process.env;
 
 // Connect to MongoDB
