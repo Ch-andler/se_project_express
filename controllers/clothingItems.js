@@ -1,4 +1,5 @@
 const clothingItemSchema = require("../models/clothingItem");
+const ClothingItem = require("../models/clothingItem");
 const NotFoundError = require("../errors/NotFoundError");
 const BadRequestError = require("../errors/BadRequestError");
 const ForbiddenError = require("../errors/ForbiddenError");

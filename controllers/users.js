@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const httpErrors = require("http-errors"); // Import http-errors
 const User = require("../models/user");
 const ConflictError = require("../errors/ConflictError");
 const BadRequestError = require("../errors/BadRequestError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
 const NotFoundError = require("../errors/NotFoundError");
-const httpErrors = require("http-errors"); // Import http-errors
 
 const { JWT_SECRET } = require("../utils/config");
 
