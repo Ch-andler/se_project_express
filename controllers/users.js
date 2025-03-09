@@ -9,7 +9,7 @@ const httpErrors = require("http-errors"); // Import http-errors
 
 const { JWT_SECRET } = require("../utils/config");
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   // user ID destructured from req.user
   const { _id: userId } = req.user;
   User.findById(userId)
@@ -30,7 +30,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   bcrypt
     .hash(password, 10)
@@ -77,7 +77,7 @@ const login = (req, res, next) => {
     });
 };
 
-const updateCurrentUser = (req, res) => {
+const updateCurrentUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
 

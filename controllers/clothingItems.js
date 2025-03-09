@@ -9,7 +9,7 @@ const ForbiddenError = require("../errors/ForbiddenError");
   FORBIDDEN,
 } = require("../utils/errors"); */
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   console.log(req.user._id);
   console.log(req);
   console.log(req.body);
@@ -32,7 +32,7 @@ const createItem = (req, res) => {
     });
 };
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   clothingItemSchema
     .find({})
     .then((items) => res.status(200).send(items))
@@ -44,7 +44,7 @@ const getItems = (req, res) => {
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   const { _id: userId } = req.user;
 
@@ -72,7 +72,7 @@ const deleteItem = (req, res) => {
     });
 };
 
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   console.log(req.user._id);
   clothingItemSchema
     .findByIdAndUpdate(
@@ -93,7 +93,7 @@ const likeItem = (req, res) => {
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   console.log(req.user._id);
   clothingItemSchema
     .findByIdAndUpdate(
