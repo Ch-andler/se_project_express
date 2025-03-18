@@ -22,6 +22,13 @@ mongoose
     console.error("Error connecting to DB:", error);
   });
 
+// Crash test route
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -34,12 +41,6 @@ app.use(errorLogger); // enabling the error logger
 
 app.use(errors());
 app.use(errorHandler);
-
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Server will crash now");
-  }, 0);
-});
 
 // Start server
 app.listen(PORT, () => {

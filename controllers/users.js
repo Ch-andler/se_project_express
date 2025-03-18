@@ -48,9 +48,12 @@ const createUser = (req, res, next) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data sent"));
       }
-      if (err.name === "InvalidEmailError") {
+
+      // Corrected duplicate email error check
+      if (err.code === 11000) {
         return next(new ConflictError("Please try a different email address."));
       }
+
       return next(err);
     });
 };
@@ -85,9 +88,7 @@ const updateCurrentUser = (req, res, next) => {
     { name, avatar },
     { new: true, runValidators: true }
   )
-    .orFail(() => {
-      throw new Error("DocumentNotFoundError");
-    })
+    .orFail(() => {})
     .then((user) => {
       res.send({
         _id: user._id,

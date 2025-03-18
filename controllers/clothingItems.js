@@ -1,5 +1,5 @@
 const clothingItemSchema = require("../models/clothingItem");
-const ClothingItem = require("../models/clothingItem");
+/* const ClothingItem = require("../models/clothingItem"); */
 const NotFoundError = require("../errors/NotFoundError");
 const BadRequestError = require("../errors/BadRequestError");
 const ForbiddenError = require("../errors/ForbiddenError");
@@ -50,14 +50,16 @@ const deleteItem = (req, res, next) => {
       if (!item.owner.equals(userId)) {
         next(new ForbiddenError("Item not found"));
       }
-      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
-        if (!deletedItem) {
-          next(new NotFoundError("Item not found Boogies"));
-        }
-        return res
-          .status(200)
-          .send({ message: "Item has been deleted", deleteItem });
-      });
+      return clothingItemSchema
+        .findByIdAndDelete(itemId)
+        .then((deletedItem) => {
+          if (!deletedItem) {
+            next(new NotFoundError("Item not found Boogies"));
+          }
+          return res
+            .status(200)
+            .send({ message: "Item has been deleted", deleteItem });
+        });
     });
 };
 
