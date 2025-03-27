@@ -54,12 +54,21 @@ const deleteItem = (req, res, next) => {
         .findByIdAndDelete(itemId)
         .then((deletedItem) => {
           if (!deletedItem) {
-            next(new NotFoundError("Item not found Boogies"));
+            return next(new NotFoundError("Item not found Boogies"));
           }
           return res
             .status(200)
             .send({ message: "Item has been deleted", deleteItem });
         });
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return next(new BadRequestError("Invalid data entered."));
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return next(new NotFoundError("Requested resource not found."));
+      }
+      return next(err);
     });
 };
 

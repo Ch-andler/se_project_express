@@ -5,6 +5,7 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
+const path = require("path");
 
 const app = express();
 
@@ -32,13 +33,24 @@ app.get("/crash-test", () => {
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-// Main router
 app.use(requestLogger);
-app.use("/", mainRouter);
 
-app.use(errorLogger); // enabling the error logger
+// API routes
+app.use("/api", mainRouter);
 
+// Static files
+app.use(
+  "/se_project_react",
+  express.static(path.join(__dirname, "../project-react/dist"))
+);
+
+// Catch-all route for React app
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+// Error handling
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
@@ -46,3 +58,4 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+//aaaaaaaaaaaaaaaaaaaaaaa

@@ -4,6 +4,7 @@ const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const { login, createUser } = require("../controllers/users");
 const { NotFound } = require("../utils/errors");
+const NotFoundError = require("../errors/NotFoundError");
 
 // Validation schemas
 const authValidation = celebrate({
@@ -32,7 +33,7 @@ router.use("/users", userRouter);
 
 // Catch-all for unmatched routes with centralized error handling
 router.use((req, res, next) => {
-  next(new NotFound("Route not found"));
+  next(new NotFoundError("Route not found"));
 });
 
 module.exports = router;
