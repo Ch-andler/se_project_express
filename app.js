@@ -41,12 +41,12 @@ app.use("/api", mainRouter);
 // Static files
 app.use(
   "/se_project_react",
-  express.static(path.join(__dirname, "../project-react/dist"))
+  express.static(path.join(__dirname, "../se_project_react/dist"))
 );
 
 // Catch-all route for React app
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+  res.sendFile(path.join(__dirname, "../se_project_react/dist/index.html"));
 });
 
 // Error handling
