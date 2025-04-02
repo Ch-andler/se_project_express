@@ -5,7 +5,6 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
-const path = require("path");
 
 const app = express();
 
@@ -58,4 +57,3 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-//aaaaaaaaaaaaaaaaaaaaaaa

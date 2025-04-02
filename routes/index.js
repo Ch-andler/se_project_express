@@ -3,7 +3,6 @@ const { celebrate, Joi, Segments } = require("celebrate");
 const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const { login, createUser } = require("../controllers/users");
-const { NotFound } = require("../utils/errors");
 const NotFoundError = require("../errors/NotFoundError");
 
 // Validation schemas
