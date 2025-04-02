@@ -48,7 +48,7 @@ const deleteItem = (req, res, next) => {
     .orFail()
     .then((item) => {
       if (!item.owner.equals(userId)) {
-        next(new ForbiddenError("Item not found"));
+        return next(new ForbiddenError("Item not found"));
       }
       return clothingItemSchema
         .findByIdAndDelete(itemId)

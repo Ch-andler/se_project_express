@@ -36,18 +36,18 @@ app.use(cors());
 app.use(requestLogger);
 
 // API routes
-app.use("/api", mainRouter);
+app.use("/", mainRouter);
 
-// Static files
+/* // Static files
 app.use(
   "/se_project_react",
   express.static(path.join(__dirname, "../se_project_react/dist"))
-);
+); */
 
 // Catch-all route for React app
-app.get("*", (req, res) => {
+/* app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../se_project_react/dist/index.html"));
-});
+}); */
 
 // Error handling
 app.use(errorLogger);
